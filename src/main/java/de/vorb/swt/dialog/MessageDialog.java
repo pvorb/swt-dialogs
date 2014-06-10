@@ -26,7 +26,7 @@ public class MessageDialog extends Dialog {
      */
     public static String buttonOKText = "OK";
 
-    private final Shell shell;
+    protected final Shell shell;
 
     /**
      * MessageDialog types.
@@ -57,7 +57,7 @@ public class MessageDialog extends Dialog {
         ERROR;
     }
 
-    private MessageDialog(Shell parent, int style, Type type, String title,
+    protected MessageDialog(Shell parent, int style, Type type, String title,
             String message) {
         super(parent, style);
         final Display display = getParent().getDisplay();
@@ -125,7 +125,7 @@ public class MessageDialog extends Dialog {
         btnOk.setText(buttonOKText);
     }
 
-    private void open() {
+    protected void open() {
         shell.open();
         shell.layout();
         Display display = getParent().getDisplay();
@@ -149,7 +149,7 @@ public class MessageDialog extends Dialog {
      *            dialog message
      */
     public static void show(Shell parent, Type type, String title,
-            String message) {
+            String message, Modality modality) {
         final MessageDialog dialog = new MessageDialog(parent, SWT.DIALOG_TRIM,
                 type, title, message);
         dialog.open();
