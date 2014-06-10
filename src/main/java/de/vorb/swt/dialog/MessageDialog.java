@@ -78,7 +78,7 @@ public class MessageDialog extends Dialog {
             icon = null;
         }
 
-        shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+        shell = new Shell(getParent(), style);
         shell.setImage(icon);
         shell.setSize(340, 160);
         shell.setText(title);
@@ -147,11 +147,29 @@ public class MessageDialog extends Dialog {
      *            dialog title
      * @param message
      *            dialog message
+     * @param modality
+     *            modality type
      */
     public static void show(Shell parent, Type type, String title,
             String message, Modality modality) {
-        final MessageDialog dialog = new MessageDialog(parent, SWT.DIALOG_TRIM,
-                type, title, message);
+
+        final int mod;
+        switch (modality) {
+        case PRIMARY:
+            mod = SWT.PRIMARY_MODAL;
+            break;
+        case APPLICATION:
+            mod = SWT.APPLICATION_MODAL;
+            break;
+        case SYSTEM:
+            mod = SWT.SYSTEM_MODAL;
+            break;
+        default:
+            mod = SWT.NONE;
+        }
+
+        final MessageDialog dialog = new MessageDialog(parent,
+                SWT.DIALOG_TRIM | mod, type, title, message);
         dialog.open();
     }
 }
