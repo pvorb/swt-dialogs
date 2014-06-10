@@ -1,0 +1,90 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = 'de.vorb'
+
+version = '0.0.1'
+sourceCompatibility = 1.6
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile fileTree(dir: 'lib', includes: ['*.jar'])
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+// assume UTF-8 source code
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+jar {
+  manifest {
+    attributes 'Implementation-Title': 'swt-dialogs',
+      'Implementation-Version': version
+  }
+}
+
+artifacts {
+  archives jar
+
+  archives javadocJar
+  archives sourcesJar
+}
+
+signing {
+  sign configurations.archives
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: sonatypeUsername, password: sonatypePassword)
+      }
+
+      pom.project {
+         name 'swt-dialogs'
+         packaging 'jar'
+         description 'Common dialog classes for SWT'
+         url 'https://github.com/pvorb/swt-dialogs'
+
+         scm {
+             url 'https://github.com/pvorb/swt-dialogs'
+             connection 'scm:git://github.com/pvorb/swt-dialogs.git'
+             developerConnection 'scm:git@github.com:pvorb/swt-dialogs.git'
+         }
+
+         licenses {
+             license {
+                 name 'MIT license'
+                 url 'http://vorba.ch/license/mit.html'
+                 distribution 'repo'
+             }
+         }
+
+        developers {
+          developer {
+            id 'pvorb'
+            name 'Paul Vorbach'
+            email 'paul@vorba.ch'
+          }
+        }
+      }
+    }
+  }
+}
